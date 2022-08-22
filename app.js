@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const conn = mongoose.connect("mongodb://localhost:27017/fruitsDB")
+mongoose.connect("mongodb://localhost:27017/fruitsDB")
 
 const fruitSchema = new mongoose.Schema ({
     name: {
@@ -23,21 +23,31 @@ const fruit = new Fruit ({
     review: "Pretty solid das a fruit."
 })
 
-//fruit.save()
+fruit.save()
 
 const personSchema = new mongoose.Schema ({
     name: String,
-    age: Number
+    age: Number,
+    favoriteFruit: fruitSchema,
 })
 
 const Person = mongoose.model("Person", personSchema)
 
-const person = new Person({
-    name: "Rafael",
-    age: 22
+const pineapple = new Fruit ({
+    name: "pineapple",
+    score: 10,
+    review: "Great fruit."
 })
 
-// person.save()
+pineapple.save()
+
+const person = new Person({
+    name: "Ana",
+    age: 12,
+    favoriteFruit: pineapple
+})
+
+person.save()
 
 const kiwi = new Fruit ({
     name: "Kiwi",
@@ -57,13 +67,13 @@ const banana = new Fruit ({
     review: "Weird texture"
 })
 
-// Fruit.insertMany([kiwi, orange, banana], (err) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log("Succesfully saved all the fruits to fruitsDB");
-//     }
-// })
+Fruit.insertMany([kiwi, orange, banana], (err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Succesfully saved all the fruits to fruitsDB");
+    }
+})
 
 Fruit.find((err, fruits) => {
     if (err) {
@@ -74,4 +84,28 @@ Fruit.find((err, fruits) => {
         })
     }
     mongoose.connection.close()
+})
+
+Fruit.updateOne({_id: "Orange"}, {name: "Peach"}, (err) => {
+    if (err) {
+        console.log(err)
+    } else {
+        console.log("Successfull updated the document.")
+    }
+})
+
+Fruit.deleteOne({name: "Kiwi"}, (err) => {
+    if (err) {
+        console.log(err)
+    } else {
+        console.log("Succesfully deleted the document.")
+    }
+})
+
+Person.deleteMany({name: "Rafael"}, (err) => {
+    if (err) {
+        console.log(err)
+    } else {
+        console.log("Succesfully deleted the documents.")
+    }
 })
